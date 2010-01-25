@@ -1,0 +1,36 @@
+gettext-js
+======
+
+
+About
+------
+
+gettext-js is an implementation of the gettext API in JavaScript, with
+adaptions to the characteristics of JavaScript. These adaptions arise from the
+asynchronous characteristics of the language, and the fact that it is used in
+non latency-free server/client-environments.
+
+
+Status
+------
+
+Development has just started, and the code is far from beeing complete. The
+existing code only covers the parsing of PO files, and their serialization to
+JSON format.
+
+
+Adaptions
+------
+
+Since JavaScript programs usually make use of asynchronous programming,
+gettext-js does not support setting a global state of the gettext module.
+
+When binding a textdomain, an object with a defined state is returned, that may
+listen to language change events occurring higher in the hierarchy, but never
+changes the domain it has been bound to initially.
+
+For browser-based JavaScript, gettext-js offers the possibility to execute a
+callback upon catalog/domain load for code that depends on it.
+
+Other adaptions will include lazy evaluation and the possibility to translate
+DOM nodes (elements and text).
