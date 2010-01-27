@@ -25,17 +25,16 @@ gettext.translate = {};
         // scaffold the instance. can be used to create bound methods on the
         // instance, so that they can be aliased. E.g.:
         //      var _ = domain.gettext, n_ = domain.ngettext;
-        for (var i = 0, fn; fn = arguments.callee.scaffolders; i += 1) {
-            fn(this, arguments.callee);
+        for (var i = 0, fn; fn = t.Textdomain.scaffolders; i += 1) {
+            fn(this);
         }
     };
 
     /**
-     * Functions to scaffold newly created {@link gettext.translate.Textdomain}
-     * instances.
+     * Functions to scaffold newly created instances
+     * of {@link gettext.translate.Textdomain}.
      *
-     * Every function will receive two arguments: the Textdomain instance and
-     * the Textdomain constructor function.
+     * Every scaffolding function will receive the instance as argument.
      *
      * @type {Function[]}
      */
@@ -43,13 +42,13 @@ gettext.translate = {};
 
         // Adds bound “gettext” and “ngettext” methods to the instance.
         // Those will always be executed in the context of the instance
-        function(domain, constructor) {
+        function(domain) {
             domain.gettext = function() {
-                return constructor.prototype.gettext.apply(domain, arguments);
+                return t.Textdomain.prototype.gettext.apply(domain, arguments);
             };
 
             domain.ngettext = function() {
-                return constructor.prototype.ngettext.apply(domain, arguments);
+                return t.Textdomain.prototype.ngettext.apply(domain, arguments);
             };
         }
     ];
@@ -62,33 +61,39 @@ gettext.translate = {};
      */
     t.Textdomain.prototype.gettext = function(context, message, options) {
         // arguments normalization
-        switch (true) {
-            case arguments.length == 2 && typeof message == "object":
-                options = arguments[1];
-                // FALLTRHOUGH INTENDED!
-            case arguments.length == 1:
-                context = null;
-                message = arguments[0];
-                break;
+        var argLen = arguments.length; // arguments lookup can be expensive
+        if (argLen == 2 && typeof count == "object") { // no context
+            options = message;
+        }
+        if (argLen == 1 || argLen == 2 && typeof count == "object") {
+            message = context;
+            context = null;
         }
 
         //TODO
     };
 
+    /**
+     * @param {String} [context] The context of the message
+     * @param {String} singularMsg The singular message to translate
+     * @param {String} pluralMsg The plural message to translate
+     * @param {Number} n
+     * @param {Object} [options] Options
+     * @returns {String}
+     */
     t.Textdomain.ngettext = function(context, singularMsg, pluralMsg,
-                                           count, options) {
+                                     n, options) {
         // arguments normalization
-        switch (true) {
-            case arguments.length == 4 && typeof count == "object":
-                options = arguments[4];
-                // FALLTRHOUGH INTENDED!
-            case arguments.length == 3:
-                context = null;
-                singularMsg = arguments[0];
-                pluralMsg = arguments[1];
-                count = arguments[2];
-                break;
-        };
+        var argLen = arguments.length;
+        if (argLen == 4 && typeof count == "object") { // no context
+                options = count;
+        }
+        if (argLen == 3 || argLen == 4 && typeof count == "object") {
+            count = pluralMsg;
+            pluralMsg = singularMsg;
+            singularMsg = context;
+            context = null;
+        }
 
         //TODO
     };
