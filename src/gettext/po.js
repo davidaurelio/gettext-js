@@ -458,20 +458,12 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
 
 
     /**
-     * @class
-     */
-    po.ParsingError = function() {
-        Error.apply(this, arguments);
-    };
-    po.ParsingError.prototype = new Error();
-
-    /**
      * Parses a string in PO file format.
      *
      * @methodOf gettext.po
      * @param {String} source A string in PO file format
      * @returns {gettext.po.File}
-     * @throws {gettext.po.ParsingError}
+     * @throws {Error}
      */
     po.parse = function(source) {
         // split into lines w/content, clearing leading + trailing whitespace
@@ -506,7 +498,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
                     var commentType = gettext.po.commentTypes[line[1]];
 
                     if (typeof commentType === "undefined") {
-                        throw new po.ParsingError("Unknown comment start: " + line);
+                        throw new Error("Unknown comment start: " + line);
                     }
 
                     var propName = commentType[1],
@@ -533,7 +525,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
                 }
 
                 if (!valid) {
-                    throw new po.ParsingError("Illegal PO format on line " + (i + 1));
+                    throw new Error("Illegal PO format on line " + (i + 1));
                 }
             }
             else if (line[0] === '"' && line[line.length-1] === '"' && dataArgs) {
@@ -541,7 +533,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
                 entry.append.apply(entry, dataArgs);
             }
             else {
-                throw new po.ParsingError("Illegal PO format on line " + (i + 1));
+                throw new Error("Illegal PO format on line " + (i + 1));
             }
         }
 
