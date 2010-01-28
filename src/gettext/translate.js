@@ -22,6 +22,20 @@ gettext.translate = {};
      *      retrieve and load JSON catalogs.
      */
     t.Textdomain = function(name, store) {
+        /**
+         * The name of the domain. This property should be considered read-only.
+         *
+         * @type String
+         */
+        this.name = name;
+
+        /**
+         * The store to use for message retrieval. This property should be
+         * considered read-only.
+         *
+         * @type gettext.translate.DomainStore
+         */
+        this.store = store;
 
         // scaffold the instance. can be used to create bound methods on the
         // instance, so that they can be aliased. E.g.:
@@ -71,7 +85,8 @@ gettext.translate = {};
             context = null;
         }
 
-        //TODO
+        return this.store.getMessage(this.name, this.lang, context,
+                                     message, "", 1, options);
     };
 
     /**
@@ -96,7 +111,8 @@ gettext.translate = {};
             context = null;
         }
 
-        //TODO
+        return this.store.getMessage(this.name, this.lang, context,
+                                     singularMsg, pluralMsg, n, options);
     };
 
 
@@ -152,5 +168,13 @@ gettext.translate = {};
     t.DomainStore.prototype.addCatalog = function(catalog) {
         //TODO
     };
+
+    /**
+     * @returns {String}
+     */
+    t.DomainStore.prototype.getMessage = function(domain, lang, context,
+                                                  singular, plural, n, options) {
+        return "";
+    }
 
 }(gettext.translate));
