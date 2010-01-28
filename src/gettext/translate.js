@@ -16,6 +16,7 @@ gettext.translate = {};
      * Represents a single “text domain” / message catalog.
      *
      * @class
+     * @name gettext.translate.textdomain
      * @param {String} name The domain name
      * @param {gettext.translate.DomainStore} The store which is used to
      *      retrieve and load JSON catalogs.
@@ -36,7 +37,7 @@ gettext.translate = {};
      *
      * Every scaffolding function will receive the instance as argument.
      *
-     * @type {Function[]}
+     * @type Function[]
      */
     t.Textdomain.scaffolders = [
 
@@ -108,6 +109,7 @@ gettext.translate = {};
      * language.
      *
      * @class
+     * @name gettext.translate.DomainStore
      * @param {Function} fnLoad A function used to load and retrieve message
      *      catalogs. The loader function is supposed to forward the catalog
      *      to {@link gettext.translate.DomainStore#addCatalog}. This makes

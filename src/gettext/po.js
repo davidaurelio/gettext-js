@@ -23,7 +23,7 @@ gettext.po = {};
 /**
  * Comment types used in PO(T) files.
  *
- * @type {Array}
+ * @type Array
  */
 gettext.po.commentTypes = [
     [ " ", "translatorComments", /# (.*)/ ],
@@ -215,7 +215,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
     po.Entry = function() {
         /**
          * Comments added by the translator
-         * @type {Array}
+         * @type Array
          */
         this.translatorComments = [];
 
@@ -223,27 +223,27 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
          * Comments extracted from the original source code.
          *
          * Extracted comments are hints for the translator.
-         * @type {Array}
+         * @type Array
          */
         this.extractedComments = [];
 
         /**
          * Locations of the message in the source code.
-         * @type {Array}
+         * @type Array
          */
         this.references = [];
 
         /**
          * Flags describing the interpolation format used in the message, and
          * whether the message is fuzzy.
-         * @type {Array}
+         * @type Array
          */
         this.flags = [];
 
         /**
          * The previous untranslated string, after the programmer has
          * made changes.
-         * @type {Array}
+         * @type Array
          */
         this.previous = [];
 
@@ -253,13 +253,13 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
          * Note: no message context (null) is different from an empty message
          * context (empty string) in gettext.
          *
-         * @type {String|null}
+         * @type String|null
          */
         this.msgctxt = null;
 
         /**
          * The message used in the source code.
-         * @type {String}
+         * @type String
          */
         this.msgid = "";
 
@@ -268,7 +268,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
          *
          * This property is only used if the message has a plural version
          *
-         * @type {String}
+         * @type String
          */
         this.msgid_plural = null;
 
@@ -277,7 +277,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
          *
          * Always an array, even when only the singular form is translated
          *
-         * @type {Array}
+         * @type Array
          */
         this.msgstr = [];
     };
