@@ -480,7 +480,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
         for (var i = 0, iLen = lines.length, dataArgs = null, line; i < iLen; i += 1) {
             line = lines[i];
 
-            if (line[0] === "#") {
+            if (line.charAt(0) === "#") {
 
                 // a comment following a line of data means that a new entry begins
                 if (entryPart === entryParts.DATA) {
@@ -495,7 +495,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
                     entry.translatorComments.push("");
                 }
                 else {
-                    var commentType = gettext.po.commentTypes[line[1]];
+                    var commentType = gettext.po.commentTypes[line.charAt(1)];
 
                     if (typeof commentType === "undefined") {
                         throw new Error("Unknown comment start: " + line);
@@ -528,7 +528,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
                     throw new Error("Illegal PO format on line " + (i + 1));
                 }
             }
-            else if (line[0] === '"' && line[line.length-1] === '"' && dataArgs) {
+            else if (line.charAt(0) == '"' && line.slice(-1) == '"' && dataArgs) {
                 dataArgs[dataArgs.length-1] = po.unescapeStr(line.slice(1, -1));
                 entry.append.apply(entry, dataArgs);
             }
