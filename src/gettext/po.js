@@ -67,7 +67,9 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
         for (var i = 0, pair, from, to; (pair = escapes[i]); i += 1) {
             from = pair[0];
             to = pair[1];
-            escaped = escaped.split(from).join(to);
+            while (escaped.indexOf(from) !== -1) {
+                escaped = escaped.replace(from, to);
+            }
         }
 
         return escaped;
@@ -85,7 +87,9 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
         for (var i = 0, pair, from, to; (pair = escapes[i]); i += 1) {
             from = pair[1];
             to = pair[0];
-            unescaped = unescaped.split(from).join(to);
+            while (unescaped.indexOf(from) !== -1) {
+                unescaped = unescaped.replace(from, to);
+            }
         }
 
         return unescaped;
