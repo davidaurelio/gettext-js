@@ -189,26 +189,20 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
      * @returns {String}
      */
     po.File.prototype.toJSON = function() {
-        var obj = {
-                plural : this.meta["Plural-Forms"] || null,
-                contexts : {},
-                nocontext : {}
-            },
-            c = obj.contexts,
-            parent;
+        var catalog = { plural : this.meta["Plural-Forms"] || null, msg : {} };
 
-        for (var i = 0, entry; (entry = this.entries[i]); i += 1) {
-            if (entry.msgctxt !== null) {
-                parent = c[entry.msgctxt] = c[entry.msgctxt] || {};
+        for (var i = 0, entry, msgid; (entry = this.entries[i]); i += 1) {
+            if  (entry.msgctxt == null) { // null or undefined
+                msgid = entry.msgid;
             }
             else {
-                parent = obj.nocontext;
+                msgid = entry.msgctxt + "\x04" + entry.msgid;
             }
 
-            parent[entry.msgid] = entry.msgstr;
+            catalog.msg[msgid] = entry.msgstr;
         }
 
-        return JSON.stringify(obj);
+        return JSON.stringify(catalog);
     }
 
     /**
