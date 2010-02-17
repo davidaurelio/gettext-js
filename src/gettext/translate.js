@@ -74,7 +74,8 @@ gettext.translate = {};
                 return proto.gettext.call(domain, context, message, options);
             };
 
-            domain.ngettext = function() {
+            domain.ngettext = function(domain, context, singularMsg,
+                                           pluralMsg, n, options) {
                 return proto.ngettext.call(domain, context, singularMsg,
                                            pluralMsg, n, options);
             };
