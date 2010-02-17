@@ -58,12 +58,14 @@ gettext.translate = {};
         // Adds bound “gettext” and “ngettext” methods to the instance.
         // Those will always be executed in the context of the instance
         function(domain) {
-            domain.gettext = function() {
-                return t.Textdomain.prototype.gettext.apply(domain, arguments);
+            var p = t.Textdomain.prototype;
+            domain.gettext = function(context, message, options) {
+                return p.gettext.call(domain, context, message, options);
             };
 
             domain.ngettext = function() {
-                return t.Textdomain.prototype.ngettext.apply(domain, arguments);
+                return p.ngettext.call(domain, context, singularMsg, pluralMsg,
+                                       n, options);
             };
         }
     ];
@@ -76,11 +78,11 @@ gettext.translate = {};
      */
     t.Textdomain.prototype.gettext = function(context, message, options) {
         // arguments normalization
-        var argLen = arguments.length; // arguments lookup can be expensive
-        if (argLen == 2 && typeof count == "object") { // no context
+        var undefined; // undefined as local var is much more performant
+        if (options === undefined && typeof message === "object") { // no context
             options = message;
         }
-        if (argLen == 1 || argLen == 2 && typeof count == "object") {
+        if (message === undefined || options === undefined && typeof message === "object") {
             message = context;
             context = null;
         }
@@ -100,12 +102,12 @@ gettext.translate = {};
     t.Textdomain.ngettext = function(context, singularMsg, pluralMsg,
                                      n, options) {
         // arguments normalization
-        var argLen = arguments.length;
-        if (argLen == 4 && typeof count == "object") { // no context
-                options = count;
+        var undefined; // undefined as local var is much more performant
+        if (options === undefined && typeof n === "object") { // no context
+                options = n;
         }
-        if (argLen == 3 || argLen == 4 && typeof count == "object") {
-            count = pluralMsg;
+        if (n === undefined || options === undefined && typeof n === "object") {
+            n = pluralMsg;
             pluralMsg = singularMsg;
             singularMsg = context;
             context = null;
