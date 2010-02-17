@@ -48,8 +48,11 @@ gettext.translate = {};
         // scaffold the instance. can be used to create bound methods on the
         // instance, so that they can be aliased. E.g.:
         //      var _ = domain.gettext, n_ = domain.ngettext;
-        for (var i = 0, fn; fn = t.Textdomain.scaffolders; i += 1) {
-            fn(this);
+        var scaffolders = t.Textdomain.scaffolders,
+            proto = t.Textdomain.prototype;
+
+        for (var i = 0, fn; fn = scaffolders[i]; i += 1) {
+            fn(this, proto);
         }
     };
 
@@ -57,23 +60,23 @@ gettext.translate = {};
      * Functions to scaffold newly created instances
      * of {@link gettext.translate.Textdomain}.
      *
-     * Every scaffolding function will receive the instance as argument.
+     * Every scaffolding function will receive the instance and
+     * {@link gettext.translate.Textdomain.prototype} as arguments.
      *
      * @type Function[]
      */
     t.Textdomain.scaffolders = [
 
         // Adds bound “gettext” and “ngettext” methods to the instance.
-        // Those will always be executed in the context of the instance
-        function(domain) {
-            var p = t.Textdomain.prototype;
+        // These will always be executed in the context of the instance
+        function(domain, proto) {
             domain.gettext = function(context, message, options) {
-                return p.gettext.call(domain, context, message, options);
+                return proto.gettext.call(domain, context, message, options);
             };
 
             domain.ngettext = function() {
-                return p.ngettext.call(domain, context, singularMsg, pluralMsg,
-                                       n, options);
+                return proto.ngettext.call(domain, context, singularMsg,
+                                           pluralMsg, n, options);
             };
         }
     ];
