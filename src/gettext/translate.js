@@ -37,6 +37,14 @@ gettext.translate = {};
          */
         this.store = store;
 
+        /**
+         * The language to retrieve. Defaults to the language of the store,
+         * but can be overridden.
+         *
+         * @type String
+         */
+        this.lang = null;
+
         // scaffold the instance. can be used to create bound methods on the
         // instance, so that they can be aliased. E.g.:
         //      var _ = domain.gettext, n_ = domain.ngettext;
