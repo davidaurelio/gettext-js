@@ -1,86 +1,38 @@
-/**
- * This file contains the actual translation code and is work in progress.
- *
- * @author David Aurelio <dev@david-aurelio.com>
- */
-
-var gettext = gettext || {};
-
-/**
- * @namespace
- */
-gettext.translate = {};
-
-(function(t) {
+gettext.TextDomain = function(name, store) {
     /**
-     * Represents a single “text domain” / message catalog.
+     * The name of the domain. This property should be considered read-only.
      *
-     * @class
-     * @name gettext.translate.textdomain
-     * @param {String} name The domain name
-     * @param {gettext.translate.DomainStore} The store which is used to
-     *      retrieve and load JSON catalogs.
+     * @type {String}
      */
-    t.Textdomain = function(name, store) {
-        /**
-         * The name of the domain. This property should be considered read-only.
-         *
-         * @type String
-         */
-        this.name = name;
-
-        /**
-         * The store to use for message retrieval. This property should be
-         * considered read-only.
-         *
-         * @type gettext.translate.DomainStore
-         */
-        this.store = store;
-
-        /**
-         * The language to retrieve. Defaults to the language of the store,
-         * but can be overridden.
-         *
-         * @type String
-         */
-        this.lang = null;
-
-        // scaffold the instance. can be used to create bound methods on the
-        // instance, so that they can be aliased. E.g.:
-        //      var _ = domain.gettext, n_ = domain.ngettext;
-        var scaffolders = t.Textdomain.scaffolders,
-            proto = t.Textdomain.prototype;
-
-        for (var i = 0, fn; fn = scaffolders[i]; i += 1) {
-            fn(this, proto);
-        }
-    };
+    this.name = name;
 
     /**
-     * Functions to scaffold newly created instances
-     * of {@link gettext.translate.Textdomain}.
+     * The store to use for message retrieval. This property should be
+     * considered read-only.
      *
-     * Every scaffolding function will receive the instance and
-     * {@link gettext.translate.Textdomain.prototype} as arguments.
-     *
-     * @type Function[]
+     * @type {gettext.Store}
      */
-    t.Textdomain.scaffolders = [
+    this.store = store;
 
-        // Adds bound “gettext” and “ngettext” methods to the instance.
-        // These will always be executed in the context of the instance
-        function(domain, proto) {
-            domain.gettext = function(context, message, options) {
-                return proto.gettext.call(domain, context, message, options);
-            };
+    /**
+     * The language to retrieve. Defaults to the language of the store,
+     * but can be overridden.
+     *
+     * @type String
+     */
+    this.lang = null;
 
-            domain.ngettext = function(domain, context, singularMsg,
-                                           pluralMsg, n, options) {
-                return proto.ngettext.call(domain, context, singularMsg,
-                                           pluralMsg, n, options);
-            };
-        }
-    ];
+    var bind = gettext.util.bind, p = gettext.TextDomain.prototype; // arguments.callee.prototype ?
+    for (var i = 0, method; (method = this._toBind[i]); i++) {
+        this[method] = bind(this, p[method]);
+    }
+};
+
+gettext.TextDomain.prototype = {
+    /**
+     * @type {String[]} Names of methods that will be bound to each instance
+     */
+    _toBind: ["gettext", "ngettext"],
 
     /**
      * @param {String} [context] The context of the message
@@ -88,20 +40,19 @@ gettext.translate = {};
      * @param {Object} [options] Options
      * @returns {String}
      */
-    t.Textdomain.prototype.gettext = function(context, message, options) {
+    gettext: function(context, message, options) {
         // arguments normalization
-        var undefined; // undefined as local var is much more performant
-        if (options === undefined && typeof message === "object") { // no context
-            options = message;
-        }
-        if (message === undefined || options === undefined && typeof message === "object") {
-            message = context;
-            context = null;
+        if (typeof options === "undefined") { // less than 3 args received
+            if (typeof message !== "string") { // no context received
+                message = context;
+                options = message;
+                context = null;
+            }
         }
 
         return this.store.getMessage(this.name, this.lang, context,
                                      message, "", 1, options);
-    };
+    },
 
     /**
      * @param {String} [context] The context of the message
@@ -111,84 +62,19 @@ gettext.translate = {};
      * @param {Object} [options] Options
      * @returns {String}
      */
-    t.Textdomain.ngettext = function(context, singularMsg, pluralMsg,
-                                     n, options) {
+    ngettext: function(context, singularMsg, pluralMsg, n, options) {
         // arguments normalization
-        var undefined; // undefined as local var is much more performant
-        if (options === undefined && typeof n === "object") { // no context
+        if (typeof options === "undefined") { // less than 5 args received
+            if (typeof n !== "number") { // if not a number, no context given
+                singularMsg = context;
+                pluralMsg = singularMsg;
+                n = pluralMsg;
                 options = n;
-        }
-        if (n === undefined || options === undefined && typeof n === "object") {
-            n = pluralMsg;
-            pluralMsg = singularMsg;
-            singularMsg = context;
-            context = null;
+                context = null;
+            }
         }
 
         return this.store.getMessage(this.name, this.lang, context,
                                      singularMsg, pluralMsg, n, options);
-    };
-
-
-    /**
-     * A domain store retrieves message catalogs and acts as a factory for
-     * {@link gettext.translate.Textdomain} instances.
-     *
-     * The constructor receives a function as argument, which will be used
-     * to load/open/retrieve catalog files for a certain domain name and
-     * language.
-     *
-     * @class
-     * @name gettext.translate.DomainStore
-     * @param {Function} fnLoad A function used to load and retrieve message
-     *      catalogs. The loader function is supposed to forward the catalog
-     *      to {@link gettext.translate.DomainStore#addCatalog}. This makes
-     *      asynchronous catalog loading possible.
-     */
-    t.DomainStore = function(fnLoad) {
-        /**
-         * Loads a catalog/domain for the given domain name and language.
-         *
-         * @methodOf {gettext.translate.DomainStore}
-         * @param {String} domainName The domain name of the catalog
-         *      to retrieve.
-         * @param {String} lang The language code of the catalog to retrieve.
-         */
-        this.loadCatalog = fnLoad;
-
-        this._textdomains = [];
-
-        //TODO
-    };
-
-    /**
-     * @returns {gettext.translate.Textdomain}
-     */
-    t.DomainStore.prototype.textdomain = function(domainName) {
-        //TODO
-
-        this._textdomains.push(domain);
-        return domain;
-    };
-
-    /**
-     * Adds a catalog to the store.
-     *
-     * Fires a language change event and propagates it to all Textdomain
-     * instances produced by {@link gettext.translate.DomainStore#textdomain}.
-     *
-     * @param {Object} catalog
-     */
-    t.DomainStore.prototype.addCatalog = function(catalog) {
-        //TODO
-    };
-
-    /**
-     * @returns {String}
-     */
-    t.DomainStore.prototype.getMessage = function(domain, lang, context,
-                                                  singular, plural, n, options) {
-        return "";
     }
-
-}(gettext.translate));
+};
