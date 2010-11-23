@@ -439,8 +439,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
 
 /* --------------------------------------------------- MAIN PARSING FUNCTION */
 (function(po){
-    var reLines = /\s*(?:\r|\r\n|\n)\s*/,
-        reTrim = /(?:^\s+|\s+$)/;
+    var reLines = /[ \f\t\v]*(?:\r\n?|\n)[ \f\t\v]*/;
 
     var entryParts = {
         COMMENTS : 1,
@@ -465,7 +464,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
      */
     po.parse = function(source) {
         // split into lines w/content, clearing leading + trailing whitespace
-        var lines = source.replace(reTrim, "").split(reLines),
+        var lines = source.split(reLines),
             file = new po.File(),
             entry = new po.Entry(),
             entryPart = entryParts.COMMENTS;
@@ -478,7 +477,15 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
         for (var i = 0, iLen = lines.length, dataArgs = null, line; i < iLen; i += 1) {
             line = lines[i];
 
-            if (line.charAt(0) === "#") {
+            if (!/\S/.test(line)) {
+                continue; // empty line
+            }
+
+            else if (line.slice(0, 2) === "#~") { //TODO: Add support for obsolete entries
+                continue;
+            }
+
+            else if (line.charAt(0) === "#") {
 
                 // a comment following a line of data means that a new entry begins
                 if (entryPart === entryParts.DATA) {
@@ -496,7 +503,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
                     var commentType = gettext.po.commentTypes[line.charAt(1)];
 
                     if (typeof commentType === "undefined") {
-                        throw new Error("Unknown comment start: " + line);
+                        throw new Error("Unknown comment start on line " + (i+1) + ": " + line);
                     }
 
                     var propName = commentType[1],
