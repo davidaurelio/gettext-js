@@ -41,17 +41,6 @@
      * @returns {String}
      */
     tdp.ngettextLazy = function() {
-        // arguments normalization
-        if (typeof options === "undefined") { // less than 5 args received
-            if (typeof n !== "number") { // if not a number, no context given
-                singularMsg = context;
-                pluralMsg = singularMsg;
-                n = pluralMsg;
-                options = n;
-                context = null;
-            }
-        }
-
         return new this.LazyTranslation(this, arguments);
     };
 }(gettext.TextDomain.prototype));
