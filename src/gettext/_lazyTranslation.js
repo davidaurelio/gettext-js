@@ -9,8 +9,6 @@
         return domain.ngettext.apply(domain, this._args);
     };
 
-    tdp.LazyTranslation.prototype.valueOf = tdp.LazyTranslation.prototype.toString;
-
     tdp._toBind.push("gettextLazy", "ngettextLazy");
 
     /**
