@@ -28,7 +28,7 @@ gettext.Store.prototype = {
             throw new Error("No language code has been passed or been set on the textdomain.");
         }
 
-        var message, catalog, domainLangs = this._catalogs[domain];
+        var catalog, domainLangs = this._catalogs[domain];
         if (domainLangs) {
             doFallback = this._doFallbacks;
 
@@ -51,7 +51,9 @@ gettext.Store.prototype = {
 
                 if (messages.hasOwnProperty(msgid)) {
                     var idx = catalog.pluralFunc(n);
-                    message = messages[msgid][idx];
+                    var message = messages[msgid][idx];
+                    return message != null ? message :
+                        idx === 0 ? singular : messages[msgid][0];
                 }
             }
         }
