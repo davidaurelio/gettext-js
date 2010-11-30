@@ -1,3 +1,7 @@
+/** @requires gettext */
+
+/**
+ */
 gettext.TextDomain = function(name, store) {
     /**
      * The name of the domain. This property should be considered read-only.

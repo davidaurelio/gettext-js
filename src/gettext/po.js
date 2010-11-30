@@ -3,9 +3,9 @@
  * Supported serialization formats are PO(T) and JSON.
  *
  * @author David Aurelio <dev@david-aurelio.com>
+ * @requires gettext
  */
 
-var gettext = gettext || {};
 
 /**
  * Contains functionality to parse, build and serialize PO(T) files.

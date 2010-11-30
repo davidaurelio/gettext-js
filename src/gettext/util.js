@@ -1,3 +1,5 @@
+/** @requires gettext */
+
 gettext.util = {
     bind: function(context, func) {
         return function() {

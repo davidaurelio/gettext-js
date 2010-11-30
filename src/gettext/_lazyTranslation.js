@@ -1,3 +1,5 @@
+/** @requires gettext.TextDomain */
+
 (function(/**gettext.TextDomain.prototype*/tdp){
     tdp.LazyTranslation = function(domain, args) {
         this._domain = domain;
