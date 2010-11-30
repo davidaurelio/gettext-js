@@ -144,7 +144,7 @@ gettext.Store.prototype = {
         var match = this._rePluralFunc.exec(pluralForms);
         if (match) {
             try {
-                return new Function("n", "return (" + match[1] + ") >> 0");
+                return new Function("n", "n>>=0;return(" + match[1] + ")>>0");
                 // "(expr) >> 0" casts to number and might be more efficient
                 // than "Number(expr)"
             } catch(e) {
