@@ -48,21 +48,18 @@ gettext.Store.prototype = {
 
             if (catalog) {
                 var messages = catalog.messages;
-                var msgid = null == context ?
+                var msgid = null == context ? // null or undefined
                     singular : context + "\x04" + singular;
 
                 if (messages.hasOwnProperty(msgid)) {
                     var idx = catalog.pluralFunc(n);
                     var message = messages[msgid][idx];
-                    return message != null ? message :
-                        idx === 0 ? singular : messages[msgid][0];
+                    return message != null ? // null or undefined
+                        message : (idx === 0 ? singular : messages[msgid][0]);
                 }
             }
         }
 
-        if (message) {
-            return message;
-        }
         return n === 1 ? singular : plural;
     },
 
