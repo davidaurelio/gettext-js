@@ -30,7 +30,7 @@ gettext.Store.prototype = {
 
         var catalog, domainLangs = this._catalogs[domain];
         if (domainLangs) {
-            doFallback = this._doFallbacks;
+            var doFallback = this._doFallback;
 
             var langCodeBits = this._normalizeLangCode(lang, true);
             var numLangCodeBits = langCodeBits.length;
