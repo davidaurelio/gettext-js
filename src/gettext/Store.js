@@ -1,5 +1,6 @@
 /**
- * @requires {gettext.TextDomain}
+ * @requires gettext
+ * @requires gettext.TextDomain
  */
 
 /**
