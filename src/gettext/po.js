@@ -169,8 +169,11 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
         // metadata
         out.push('msgid ""');
         out.push('msgstr ""');
-        for (var name in this.meta) {
-            out.push('"' + name + ': ' + po.escapeStr(this.meta[name]) + '\\n"');
+        var meta = this.meta;
+        for (var name in meta) {
+            if (meta.hasOwnProperty(name)) {
+                out.push('"' + name + ': ' + po.escapeStr(meta[name]) + '\\n"');
+            }
         }
 
         // entries
