@@ -206,7 +206,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
         }
 
         return JSON.stringify(catalog);
-    }
+    };
 
     /**
      * Represents a PO(T) file message entry.
@@ -417,7 +417,7 @@ gettext.po.commentTypes["|"] = gettext.po.commentTypes[4];
         var props = [ "msgctxt", "msgid", "msgid_plural" ],
             out = [ this.getCommentString() ];
 
-        for (var i = 0, name; name = props[i]; i += 1) {
+        for (var i = 0, name; (name = props[i]); i += 1) {
             if (this[name] !== null) {
                 out.push(name + ' "' + po.escapeStr(this[name]) + '"');
             }
