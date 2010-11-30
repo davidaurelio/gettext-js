@@ -26,9 +26,9 @@ gettext.TextDomain = function(name, store) {
      */
     this.lang = null;
 
-    var bind = gettext.util.bind, p = gettext.TextDomain.prototype; // arguments.callee.prototype ?
-    for (var i = 0, method; (method = this._toBind[i]); i++) {
-        this[method] = bind(this, p[method]);
+    var bind = gettext.util.bind, toBind = this._toBind;
+    for (var i = 0, method; (method = toBind[i]); i++) {
+        this[method] = bind(this, this[method]);
     }
 };
 
