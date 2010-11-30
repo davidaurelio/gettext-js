@@ -19,7 +19,7 @@ gettext.Store = function(funcLoader, options) {
 gettext.Store.prototype = {
     _rePluralFunc: /plural[ \v\t\f]*=((?:n?[*?:+-\/%=!|<>&^,\s()0-9]+)*n?)\s*;?\s*$/,
 
-    bindTextDomain: function(domainName) {
+    textdomain: function(domainName) {
         return new gettext.TextDomain(domainName, this);
     },
 
