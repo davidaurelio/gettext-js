@@ -1,12 +1,23 @@
 /** @requires gettext */
 
 /**
+ * @param {string} name The name of the text domain.
+ * @param {Store} store The store to use to fetch catalogs.
+ * @param {string} [lang] The language to provide translations for.
+ * @param {Function} [onready] A callback function to call as soon as the
+ *      catalog has been loaded. Useful for asynchronous loaders.
+ *
  */
-gettext.TextDomain = function(name, store) {
+gettext.TextDomain = function(name, store, lang, onready) {
+    if (typeof lang === "function") {
+        onready = lang;
+        lang = null;
+    }
+
     /**
      * The name of the domain. This property should be considered read-only.
      *
-     * @type {String}
+     * @type {string}
      */
     this.name = name;
 
@@ -18,23 +29,17 @@ gettext.TextDomain = function(name, store) {
      */
     this.store = store;
 
-    /**
-     * The language to retrieve. Defaults to the language of the store,
-     * but can be overridden.
-     *
-     * @type String
-     */
-    this.lang = null;
-
     var bind = gettext.util.bind, toBind = this._toBind;
     for (var i = 0, method; (method = toBind[i]); i++) {
         this[method] = bind(this, this[method]);
     }
+
+    this.setLanguage(lang, onready);
 };
 
 gettext.TextDomain.prototype = {
     /**
-     * @type {String[]} Names of methods that will be bound to each instance
+     * @type {string[]} Names of methods that will be bound to each instance
      */
     _toBind: ["gettext", "ngettext"],
 
@@ -80,5 +85,21 @@ gettext.TextDomain.prototype = {
 
         return this.store.getMessage(this.name, this.lang, context,
                                      singularMsg, pluralMsg, n, options);
+    },
+
+    /**
+     * @param {string} lang The language to provide translations for.
+     * @param {Function} [onready] A callback function to call as soon as the
+     *      new catalog has been loaded. Useful for asynchronous loaders.
+     */
+    setLanguage: function(lang, onready) {
+        /**
+         * The language to retrieve. Defaults to the language of the store,
+         * but can be overridden.
+         *
+         * @type {string}
+         */
+        this.lang = lang = lang || null;
+        return this.store.fetchCatalog(this.name, lang, onready);
     }
 };
