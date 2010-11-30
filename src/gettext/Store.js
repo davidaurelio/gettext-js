@@ -4,6 +4,12 @@
  */
 
 /**
+ * A Store encapsulates a loader function that can retrieve message catalogs.
+ *
+ * The Store manages all loaded catalogs and is used by TextDomain objects to
+ * retrieve messages from it. It is necessary to construct a Store prior of
+ * doing any translations.
+ *
  * @constructor
  * @param {Function} funcLoader A function responsible of retrieving message catalogs.
  * @param {Object} [options] Configuration options for the store.
@@ -19,12 +25,32 @@ gettext.Store = function(funcLoader, options) {
 gettext.Store.prototype = {
     _rePluralFunc: /plural[ \v\t\f]*=((?:n?[*?:+-\/%=!|<>&^,\s()0-9]+)*n?)\s*;?\s*$/,
 
+    /**
+     * Returns a {TextDomain} for a given domain name.
+     *
+     * @param {string} domainName The name of the textdomain.
+     * @returns {TextDomain}
+     */
     textdomain: function(domainName) {
         return new gettext.TextDomain(domainName, this);
     },
 
 // ---------------------------------------------------------- MESSAGE RETRIEVAL
 
+    /**
+     * Retrieves a message from a catalog in a specific language.
+     *
+     * This message is meant to be used by TextDomain instances, not from user
+     * code.
+     *
+     * @param {string} domain The domain to get the translation from.
+     * @param {string} lang The langguage code to get the translation for.
+     * @param {string|null} context The message context. May be null.
+     * @param {string} singular The singular form of the message to translate.
+     * @param {string|null} plural The plural form of the message to translate.
+     * @param {Number|null} n The number of items if a plural form is requested.
+     * @returns string The requested translation or the original message.
+     */
     getMessage: function(domain, lang, context, singular, plural, n, options) {
         lang = lang || this.lang;
         if (!lang) {
@@ -71,6 +97,7 @@ gettext.Store.prototype = {
      *
      * @param {string} domain The name of the desired domain.
      * @param {string} lang The language code for the desired language.
+     * @returns {Store}
      */
     removeCatalog: function(domain, lang) {
         lang = this._normalizeLangCode(lang);
@@ -87,6 +114,7 @@ gettext.Store.prototype = {
      * @param {string} domain The textdomain name.
      * @param {string} lang The language code.
      * @param {Object} data An object representing the catalog.
+     * @returns {Store}
      */
     setCatalog: function(domain, lang, data) {
         lang = this._normalizeLangCode(lang);
@@ -105,7 +133,7 @@ gettext.Store.prototype = {
      * Creates a gettext plural function.
      *
      * Creates a function from a string. The string represents an arithmetic
-     * expression and may only consist of Numbers, operators, and the
+     * expression and may only consist of numbers, operators, and the
      * variable `n`.
      *
      * @param {string} [pluralForms] A string containing an arithmetic
@@ -141,7 +169,12 @@ gettext.Store.prototype = {
 // ---------------------------------------------------------------------- UTILS
 
     /**
+     * Normalizes a lang code: returns a lowercase, dash-separated string.
+     *
      * @param {string} langCode
+     * @param {boolean} [doReturnArray] If true, an array containing every
+     *      element of the language code.
+     *  @returns {string|Array}
      */
     _normalizeLangCode: function(langCode, doReturnArray) {
         var bits = langCode.toLowerCase().split("_");
