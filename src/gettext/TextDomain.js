@@ -4,13 +4,13 @@
  * @param {string} name The name of the text domain.
  * @param {Store} store The store to use to fetch catalogs.
  * @param {string} [lang] The language to provide translations for.
- * @param {Function} [onready] A callback function to call as soon as the
- *      catalog has been loaded. Useful for asynchronous loaders.
+ * @param {Object} [options] Options. You can add oncatalogchange and
+ *  oncatalogload handlers by passing an option object
  *
  */
-gettext.TextDomain = function(name, store, lang, onready) {
-    if (typeof lang === "function") {
-        onready = lang;
+gettext.TextDomain = function(name, store, lang, options) {
+    if (typeof lang !== "string") {
+        options = lang;
         lang = null;
     }
 
@@ -34,7 +34,8 @@ gettext.TextDomain = function(name, store, lang, onready) {
         this[method] = bind(this, this[method]);
     }
 
-    this.setLanguage(lang, onready);
+    this._registerListeners(options);
+    this.setLanguage(lang);
 };
 
 gettext.TextDomain.prototype = {
@@ -88,11 +89,9 @@ gettext.TextDomain.prototype = {
     },
 
     /**
-     * @param {string} lang The language to provide translations for.
-     * @param {Function} [onready] A callback function to call as soon as the
-     *      new catalog has been loaded. Useful for asynchronous loaders.
+     * @param {string|null} lang The language to provide translations for.
      */
-    setLanguage: function(lang, onready) {
+    setLanguage: function(lang) {
         /**
          * The language to retrieve. Defaults to the language of the store,
          * but can be overridden.
@@ -100,6 +99,19 @@ gettext.TextDomain.prototype = {
          * @type {string}
          */
         this.lang = lang = lang || null;
-        return this.store.fetchCatalog(this.name, lang, onready);
+        return this.store.fetchCatalog(this.name, lang);
+    },
+
+    /**
+     * @param {Object} [listeners] An object with listeners to register.
+     * @param {Function} [listeners.onlangchange] An event listener.
+     *      Will be fired for every new catalog that is beeing used by the
+     *      TextDomain instance. Use this to react to language changes.
+     * @param {Function} [listeners.onlangready] An event listener. Will be
+     *      fired once as soon as the next catalog beeing loaded is ready.
+     */
+    _registerListeners: function(listeners) {
+        if (typeof listeners !== "object") { return; }
+
     }
 };

@@ -29,10 +29,15 @@ gettext.Store.prototype = {
      * Returns a {TextDomain} for a given domain name.
      *
      * @param {string} domainName The name of the textdomain.
+     * @param {string} [lang] The language to provide translations for.
+     * @param {Function} [onready] A callback function to call as soon as the
+     *      catalog has been loaded. Useful for asynchronous loaders.
+     *
      * @returns {TextDomain}
      */
-    textdomain: function(domainName) {
-        return new gettext.TextDomain(domainName, this);
+    textdomain: function(domainName, lang) {
+        lang = lang || this.lang;
+        return new gettext.TextDomain(domainName, this, lang, onready);
     },
 
 // ---------------------------------------------------------- MESSAGE RETRIEVAL
@@ -91,6 +96,24 @@ gettext.Store.prototype = {
     },
 
 // --------------------------------------------------------- CATALOG MANAGEMENT
+    /**
+     * Fetches a catalog using the loader function.
+     */
+    fetchCatalog: function(domain, lang, notify) {
+        var catalogs = this._catalogs;
+        lang = this._normalizeLangCode(lang || this.lang);
+
+        if (catalogs.hasOwnProperty(domain) && catalogs[domain].hasOwnProperty(lang)) {
+            if (typeof onload === "function") {
+                onload(domain, lang, this);
+            }
+            return true;
+        }
+
+        //TODO: set callback
+        this.load(domain, lang);
+        return false;
+    },
 
     /**
      * Removes a catalog from the library.
@@ -144,9 +167,7 @@ gettext.Store.prototype = {
         var match = this._rePluralFunc.exec(pluralForms);
         if (match) {
             try {
-                return new Function("n", "n>>=0;return(" + match[1] + ")>>0");
-                // "(expr) >> 0" casts to number and might be more efficient
-                // than "Number(expr)"
+                return Function("n", "return +(" + match[1] + ")");
             } catch(e) {
                 throw new Error("Could not parse plural function: " + match[1]);
             }
