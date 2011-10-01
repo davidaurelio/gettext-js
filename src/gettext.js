@@ -1,7 +1,9 @@
 /**
  * @author David Aurelio <dev@david-aurelio.com>
  */
-/**
- * @namespace
- */
-var gettext = {};
+(function(namespace){
+	/**
+	 * @namespace gettext
+	 */
+	namespace.gettext = {};
+}(typeof exports !== "undefined" ? exports : this));
