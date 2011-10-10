@@ -1,0 +1,82 @@
+{
+    "title": "gettext catalog",
+    "description": "Schema for JSON representations of gettext catalogs.",
+
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "meta": {
+            "title": "meta data",
+            "description": "Meta data in key-value format"
+        },
+        "plural": {
+            "title": "plural function",
+            "description": "The nplurals value must be a decimal number which specifies how many different plural forms exist for this language. The string following plural is an expression which is using the C language syntax. Exceptions are that no negative numbers are allowed, numbers must be decimal, and the only variable allowed is n.",
+            "type": "string",
+            "pattern": "^nplurals=\\d+; plural=(?:n?[*?:+-\/%=!|<>&^,\\s()0-9]+)*n?;?$"
+        },
+        "messages": {
+            "title": "message entries",
+            "description": "Contains messages, 'singularmsg' or 'context\\x04singularmsg' as property names, message objects as values.",
+            "type": "object",
+            "required": true,
+
+            "additionalProperties": {
+                "title": "message entry",
+                "description": "Numeric properties (indexes) as singular / plural messages, other properties are metadata",
+                "type": ["object", "array"],
+
+                "patternProperties": {
+                    "^\\d+$": {
+                        "title": "message entry",
+                        "description": "a single singular or plural message",
+                        "type": "string"
+                    }
+                },
+
+                "items": {
+                    "title": "message entry",
+                    "description": "a single singular or plural message",
+                    "type": "string"
+                },
+
+                "additionalProperties": {
+                    "extractedComments": {
+                        "title": "extracted comments",
+                        "description": "Comments extracted from the source code together with the message string.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "flags": {
+                        "title": "flags",
+                        "description": "flags to give the user some better diagnostic messages.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "msgid_plural": {
+                        "title": "plural message",
+                        "description": "The plural message extracted from the source code.",
+                        "type": "string"
+                    },
+                    "previous": {
+                        "title": "previous version",
+                        "description": "Previous versions of message ids, contexts, and plural messages",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "references": {
+                        "title": "source locations",
+                        "description": "Source locations where this string has been used",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "translatorComments": {
+                        "title": "translator comments",
+                        "description": "Comments added by the translator.",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
