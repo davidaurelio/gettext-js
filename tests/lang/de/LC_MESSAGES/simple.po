@@ -1,0 +1,33 @@
+# German translations for PACKAGE package
+# German messages for PACKAGE.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-02 12:25+0200\n"
+"PO-Revision-Date: 2011-10-02 12:25+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: tests/source.js:1
+msgid "This is a message"
+msgstr "Dies ist eine Nachricht"
+
+#: tests/source.js:2
+msgid "This is another message"
+msgid_plural "These are other messages"
+msgstr[0] "Dies ist eine andere Nachricht"
+msgstr[1] "Dies sind andere Nachrichten"
+
+#: tests/source.js:3
+msgid "This contains … unicode."
+msgstr "Das hier enthält … Unicode."

@@ -24,4 +24,5 @@ try {
 
 
 foounit.getSuite().addFile(':spec/textdomain_spec');
+foounit.getSuite().addFile(':spec/poformat_spec');
 foounit.getSuite().run();

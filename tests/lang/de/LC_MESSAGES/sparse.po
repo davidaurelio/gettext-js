@@ -1,0 +1,8 @@
+msgid "This is a message"
+msgstr "Dies ist eine Nachricht"
+msgid "This is another message"
+msgid_plural "These are other messages"
+msgstr[0] "Dies ist eine andere Nachricht"
+msgstr[1] "Dies sind andere Nachrichten"
+msgid "This contains … unicode."
+msgstr "Das hier enthält … Unicode."
